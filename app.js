@@ -76,7 +76,7 @@ function isAdmin(req) {
 }
 
 /** Send 403 if authenticated but not an admin */
-function isAdmin(req, res, next) {
+function isAdminAthorization(req, res, next) {
   if (isAdmin(req)) {
     return next();
   }
@@ -195,7 +195,7 @@ app.get("/members", isAuthenticated, (req, res) => {
 });
 
 // Admin Page (requires login + admin role)
-app.get("/admin", isAuthenticated, isAdmin, async (req, res) => {
+app.get("/admin", isAuthenticated, isAdminAthorization, async (req, res) => {
   const users = await userCollection.find({}).toArray();
   res.render("admin", {
     authenticated: req.session.authenticated,
@@ -205,30 +205,40 @@ app.get("/admin", isAuthenticated, isAdmin, async (req, res) => {
 });
 
 // Promote a user to admin
-app.post("/promoteUser", isAuthenticated, isAdmin, async (req, res) => {
-  const schema = Joi.string().email().required();
-  const validationResult = schema.validate(req.body.email);
-  if (validationResult.error != null) return res.redirect("/admin");
+app.post(
+  "/promoteUser",
+  isAuthenticated,
+  isAdminAthorization,
+  async (req, res) => {
+    const schema = Joi.string().email().required();
+    const validationResult = schema.validate(req.body.email);
+    if (validationResult.error != null) return res.redirect("/admin");
 
-  await userCollection.updateOne(
-    { email: req.body.email },
-    { $set: { user_type: "admin" } },
-  );
-  res.redirect("/admin");
-});
+    await userCollection.updateOne(
+      { email: req.body.email },
+      { $set: { user_type: "admin" } },
+    );
+    res.redirect("/admin");
+  },
+);
 
 // Demote an admin to regular user
-app.post("/demoteUser", isAuthenticated, isAdmin, async (req, res) => {
-  const schema = Joi.string().email().required();
-  const validationResult = schema.validate(req.body.email);
-  if (validationResult.error != null) return res.redirect("/admin");
+app.post(
+  "/demoteUser",
+  isAuthenticated,
+  isAdminAthorization,
+  async (req, res) => {
+    const schema = Joi.string().email().required();
+    const validationResult = schema.validate(req.body.email);
+    if (validationResult.error != null) return res.redirect("/admin");
 
-  await userCollection.updateOne(
-    { email: req.body.email },
-    { $set: { user_type: "user" } },
-  );
-  res.redirect("/admin");
-});
+    await userCollection.updateOne(
+      { email: req.body.email },
+      { $set: { user_type: "user" } },
+    );
+    res.redirect("/admin");
+  },
+);
 
 // Logout
 app.get("/logout", (req, res) => {
