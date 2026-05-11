@@ -1,0 +1,10 @@
+<%- include('templates/header', { title: '403 - Forbidden', authenticated: typeof authenticated !== 'undefined' ? authenticated : false, user_type: typeof user_type !== 'undefined' ? user_type : '' }) %>
+
+<div class="text-center py-5">
+  <h1 class="display-1 fw-bold text-warning">403</h1>
+  <h2 class="mb-3">Access Denied</h2>
+  <p class="lead text-muted">You are not authorized to view this page. Admins only.</p>
+  <a href="/" class="btn btn-primary btn-lg mt-3">Go to Home Page</a>
+</div>
+
+<%- include('templates/footer') %>

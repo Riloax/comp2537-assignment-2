@@ -1,0 +1,12 @@
+<%- include('templates/header', { title: 'Admin Panel', authenticated, user_type }) %>
+
+<h1 class="mb-4">Admin Panel</h1>
+<p class="text-muted">Manage all registered users below.</p>
+
+<ul class="list-group">
+  <% for (let i = 0; i < users.length; i++) { %>
+    <%- include('templates/user', { user: users[i] }) %>
+  <% } %>
+</ul>
+
+<%- include('templates/footer') %>

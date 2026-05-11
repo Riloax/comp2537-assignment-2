@@ -1,0 +1,24 @@
+<li class="list-group-item d-flex justify-content-between align-items-center">
+  <div>
+    <strong><%= user.name %></strong>
+    <span class="text-muted ms-2"><%= user.email %></span>
+    <% if (user.user_type === 'admin') { %>
+      <span class="badge bg-danger ms-2">admin</span>
+    <% } else { %>
+      <span class="badge bg-secondary ms-2">user</span>
+    <% } %>
+  </div>
+  <div>
+    <% if (user.user_type === 'admin') { %>
+      <form action="/demoteUser" method="POST" class="d-inline">
+        <input type="hidden" name="email" value="<%= user.email %>">
+        <button type="submit" class="btn btn-sm btn-warning">Demote to User</button>
+      </form>
+    <% } else { %>
+      <form action="/promoteUser" method="POST" class="d-inline">
+        <input type="hidden" name="email" value="<%= user.email %>">
+        <button type="submit" class="btn btn-sm btn-success">Promote to Admin</button>
+      </form>
+    <% } %>
+  </div>
+</li>
