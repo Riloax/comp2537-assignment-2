@@ -53,20 +53,35 @@ app.use(
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 
+function isValidSession(req) {
+  if (req.session.authenticated) {
+    return true;
+  }
+  return false;
+}
+
 /** Redirect to /login if not authenticated */
 function isAuthenticated(req, res, next) {
-  if (req.session.authenticated) {
+  if (isValidSession(req)) {
     return next();
   }
   res.redirect("/login");
 }
 
+function isAdmin(req) {
+  if (req.session.user_type === "admin") {
+    return true;
+  }
+  return false;
+}
+
 /** Send 403 if authenticated but not an admin */
 function isAdmin(req, res, next) {
-  if (req.session.user_type === "admin") {
+  if (isAdmin(req)) {
     return next();
   }
-  res.status(403).render("403", {
+  res.status(403);
+  res.render("403", {
     authenticated: req.session.authenticated || false,
     user_type: req.session.user_type || "user",
   });
